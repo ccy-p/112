@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <title>留言板 - 暗色主题</title>
+    <style>
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #121212;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        h1 {
+            color: #ffffff;
+            margin: 0;
+            font-size: 2.5em;
+            background: linear-gradient(90deg, #ffff00, #ffff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+        
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .message-form {
+            background: #1e1e1e;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        
+        .message-list {
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffff00;
+            font-weight: bold;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            color: #fff;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            border-color: #007bff;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        button {
+            background: linear-gradient(135deg, #000000, #ffff00);
+            color: white;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            background: linear-gradient(135deg, #ffff00, #000000);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+        
+        .message-item {
+            background: #252525;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+            border-left: 4px solid #ffff00;
+            transition: transform 0.3s;
+        }
+        
+        .message-item:hover {
+            transform: translateY(-3px);
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        
+        .message-author {
+            font-weight: bold;
+            color: #ffff00;
+            font-size: 18px;
+        }
+        
+        .message-date {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .message-content {
+            margin-bottom: 15px;
+            color: #ffffff;
+            white-space: pre-wrap;
+        }
+        
+        .message-image {
+            max-width: 100%;
+            border-radius: 6px;
+            margin-top: 15px;
+            border: 1px solid #444;
+            display: block;
+        }
+        
+        .image-preview {
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .image-preview img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 6px;
+            border: 1px solid #444;
+        }
+        
+        .remove-image {
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+        
+        .no-messages {
+            color: #777;
+            text-align: center;
+            padding: 30px;
+            font-style: italic;
+        }
+        
+        /* 滚动条样式 */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #444;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>留言板</h1>
+        <p></p>
+    </header>
+    
+    <div class="container">
+        <!-- 留言表单 -->
+        <form class="message-form" action="save_message.php" method="POST" enctype="multipart/form-data">
+            <div class="form-group">
+                <label for="name">您的姓名</label>
+                <input type="text" id="name" name="name" required placeholder="输入您的名字">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">电子邮箱</label>
+                <input type="email" id="email" name="email" required placeholder="输入您的邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">留言内容</label>
+                <textarea id="message" name="message" required placeholder="写下您的留言..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="image">上传图片</label>
+                <input type="file" id="image" name="image" accept="image/*">
+                
+                <div class="image-preview" id="imagePreview">
+                    <img id="previewImage" src="#" alt="图片预览">
+                    <span class="remove-image" id="removeImage">移除图片</span>
+                </div>
+            </div>
+            
+            <button type="submit">发布留言</button>
+        </form>
+        
+     
+        <div class="message-list">
+            <h2>最新留言</h2>
+            
+            <!-- 示例评论1 - 带图片 -->
+            <div class="message-item">
+                <div class="message-header">
+                    <span class="message-author">cornlover</span>
+                    <span class="message-date">2025-1-15 14:30</span>
+                </div>
+                <div class="message-content">
+                    this web got the best corn
+                </div>
+                <img class="message-image" src="./popped.jpeg", alt="pop">
+            </div>
+            
+           >
+            <div class="message-item">
+                <div class="message-header">
+                    <span class="message-author">赫鲁晓夫</span>
+                    <span class="message-date">2025-1-14 19:45</span>
+                </div>
+                <div class="message-content">
+                    今天尝试做了爆米花，按照网上的食谱，加入了新鲜的玉米和糖浆，味道超级棒！
+                    简单又美味！
+                </div>
+            </div>
+            
+            <!-- 示例评论3 - 带图片 -->
+            <div class="message-item">
+                <div class="message-header">
+                    <span class="message-author">玉米迷</span>
+                    <span class="message-date">2025-2-13 10:20</span>
+                </div>
+                <div class="message-content">
+                    刚入手了最新口味的爆米花， 味道好，我希望赫鲁晓夫先生也可以试试做一份。
+                </div>
+                <img class="message-image" src="./popped.jpeg" alt="pop"> 
+            </div>
+            
+            <!-- 示例评论4 - 纯文字 -->
+            <div class="message-item">
+                <div class="message-header">
+                    <span class="message-author">募集卡</span>
+                    <span class="message-date">2025-3-12 22:10</span>
+                </div>
+                <div class="message-content">
+                    你为什么要做爆米花
+                </div>
+            </div>
+            
+            
+    </div>
+    
+    <script>
+        // 图片预览功能
+        document.getElementById('image').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const preview = document.getElementById('previewImage');
+            const previewContainer = document.getElementById('imagePreview');
+            
+            if (file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    previewContainer.style.display = 'block';
+                }
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // 移除图片功能
+        document.getElementById('removeImage').addEventListener('click', function() {
+            document.getElementById('image').value = '';
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('previewImage').src = '#';
+        });
+    </script>
+</body>
+</html>
